@@ -1,4 +1,13 @@
 ---
-# installation_os_user: pi
-# installation_os_group: pi
 nodejs_repo: node_12.x
+nodered_version: 1.1.3
+nodered_user: nodered
+nodered_user_home: /opt/node-red
+nodered_install_dir: '{{ nodered_user_home }}/.node-red'
+nodered_server_host: 0.0.0.0
+nodered_server_port: 1880
+nodered_opts: None
+nodered_pi_support: no
+nodered_pi_opts: --max_old_space_size=256
+nodered_addons:
+- name: node-red-admin

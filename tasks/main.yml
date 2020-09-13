@@ -20,36 +20,36 @@
   when: ansible_os_family == "Debian" and ansible_distribution_release == 'bionic'
 
 
+- name: Create node-red user.
+  user:
+    name: '{{ nodered_user }}'
+    state: present
+    system: true
+    home: '{{ nodered_install_dir }}'
+
 - name: Install node-red.
   npm:
     name: node-red
-    unsafe_perm: true
-    global: true
+    version: '{{ nodered_version }}'
+    state: present
+    path: '{{ nodered_install_dir }}'
 
-- name: Install node-red-admin.
+- name: Install node-red addons.
   npm:
-    name: node-red-admin
-    global: true
+    name: '{{ item.name }}'
+    version: '{{ item.version | default(omit) }}'
+    state: present
+    path: '{{ nodered_install_dir }}'
+  with_items: '{{ nodered_addons }}'
 
-- name: Install node-red-contrib-mongodb3.
-  npm:
-    name: node-red-admin
-    global: true
+- name: Set ownership of octoprint install octoprint_install_dir.
+  file:
+    path: '{{ nodered_install_dir }}'
+    recurse: yes
+    owner: '{{ nodered_user }}'
 
 - name: Install node-red service.
-  copy:
-    src: 'nodered.service'
-    dest: '/lib/systemd/system/nodered.service'
-    force: false
-  notify:
-    - Reload systemd daemon
-    - Enable & start node-red
-
-- name: Configure to start node-red as root - needs do be changed for production use.
-  lineinfile:
-    path: /lib/systemd/system/nodered.service
-    regexp: '^User='
-    line: User=root
-  notify:
-    - Reload systemd daemon
-    - Enable & start node-red
+  template:
+    src: nodered.service.j2
+    dest: /lib/systemd/system/nodered.service
+  notify: Start Node-Red

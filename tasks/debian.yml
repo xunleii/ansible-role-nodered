@@ -1,19 +1,10 @@
 ---
-- name: Rremove nodered distribution packages.
+- name: Remove nodered distribution packages.
   apt:
     name:
       - nodered
       - node-red-update
     state: absent
-
-- name: Install npm and nodejs packages.
-  apt:
-    name:
-      - npm
-      - gnupg
-    update_cache: yes
-    state: present
-
 
 - name: Install gpg key for nodesource repo.
   apt_key:
@@ -29,3 +20,4 @@
   apt:
     name:
       - nodejs
+    state: present

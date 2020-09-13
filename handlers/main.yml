@@ -1,9 +1,5 @@
 ---
-- name: Reload systemd daemon
-  systemd:
-    daemon_reload: true
-
-- name: Enable & start node-red
+- name: Start Node-Red
   systemd:
     name: 'nodered'
     state: 'started'

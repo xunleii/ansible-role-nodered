@@ -1,0 +1,24 @@
+# systemd service file to start Node-RED
+
+[Unit]
+Description=Node-RED graphical event wiring tool
+Wants=network.target
+Documentation=https://nodered.org/docs/getting-started/
+
+[Service]
+Type=simple
+User={{ nodered_user }}
+WorkingDirectory={{ nodered_install_dir }}
+Nice=5
+{% if nodered_pi_support %}
+ExecStart={{ nodered_install_dir }}/node_modules/node-red/bin/node-red-pi {{ nodered_pi_opts }} -D uiHost={{ nodered_server_host }} -D uiPort={{ nodered_server_port }} {{ nodered_opts }}
+{% else %}
+ExecStart=/usr/bin/env node {{ nodered_install_dir }}/node_modules/node-red/red.js -D uiHost={{ nodered_server_host }} -D uiPort={{ nodered_server_port }} {{ nodered_opts }}
+{% endif %}
+KillSignal=SIGINT
+Restart=on-failure
+SyslogIdentifier=Node-RED
+#StandardOutput=syslog
+
+[Install]
+WantedBy=multi-user.target
