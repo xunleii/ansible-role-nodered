@@ -1,9 +1,9 @@
 ---
-- name: force systemd to reread configs
+- name: Reload systemd daemon
   systemd:
     daemon_reload: true
 
-- name: start node-red and configure autostart at boot
+- name: Enable & start node-red
   systemd:
     name: 'nodered'
     state: 'started'
